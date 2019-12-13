@@ -1,0 +1,10 @@
+#配置模板:
+#更多可自定义配置参考 CacheRedisCaffeineProperties.Java
+cache.multi:
+  dynamic: true #是否动态根据cacheName创建Cache的实现，默认true
+  redis:
+    defaultExpiration: 600 #二级缓存默认redis过期时间，单位秒，默认3600s
+  caffeine:
+    expireAfterAccess: 5 #访问后过期时间，单位秒
+    initialCapacity: 100 #初始化大小
+    maximumSize: 1000 #最大缓存对象个数，超过此数量时会使用Window TinyLfu策略来淘汰缓存
