@@ -124,11 +124,12 @@ public class RedisCaffeineCache extends AbstractValueAdaptingCache {
         // 使用setIfAbsent原子性操作
         long expire = getExpire();
         boolean setSuccess;
-        setSuccess = redisTemplate.opsForValue().setIfAbsent(getKey(key), toStoreValue(value), expire, TimeUnit.SECONDS);
+        setSuccess = redisTemplate.opsForValue().setIfAbsent(getKey(key), toStoreValue(value));
 
         Object hasValue;
         //setNx结果
         if (setSuccess) {
+            redisTemplate.expire(getKey(key), expire, TimeUnit.SECONDS);
             push(new CacheMessage(this.name, key, CacheMessageListener.getLocalAddress()));
             hasValue = value;
         }else {
