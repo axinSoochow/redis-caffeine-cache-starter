@@ -27,7 +27,7 @@ public class CacheRedisCaffeineAutoConfiguration {
 	@Bean("L2_CacheManager")
 	@ConditionalOnBean(RedisTemplate.class)
 	public RedisCaffeineCacheManager cacheManager(RedisTemplate<Object, Object> redisTemplate) {
-		log.info("===================================");
+		log.info("====================================");
 		log.info("======= Two Level Cache Start ======");
 		log.info("====================================");
 		return new RedisCaffeineCacheManager(cacheRedisCaffeineProperties, redisTemplate);

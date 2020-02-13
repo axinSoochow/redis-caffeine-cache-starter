@@ -1,10 +1,43 @@
 #配置模板:
 #更多可自定义配置参考 CacheRedisCaffeineProperties.Java
 cache.multi:
+  cachePrefix: axin #缓存key前缀
   dynamic: true #是否动态根据cacheName创建Cache的实现，默认true
   redis:
+    topic: axin:cache:redis:caffeine:topic
     defaultExpiration: 600 #二级缓存默认redis过期时间，单位秒，默认3600s
-  caffeine:
+  # 针对自定义cacheName的本地一级缓存配置
+  cacheDefault:
     expireAfterAccess: 5 #访问后过期时间，单位秒
-    initialCapacity: 100 #初始化大小
-    maximumSize: 1000 #最大缓存对象个数，超过此数量时会使用Window TinyLfu策略来淘汰缓存
+    expireAfterWrite: 60 #写入后过期时间，单位秒
+    initialCapacity: 50 #初始化大小
+    maximumSize: 50 #最大缓存对象个数，超过此数量时会使用Window TinyLfu策略来淘汰缓存
+
+  # 默认写入后过期时间，单位秒 expireAfterWrite = 120;
+  #	默认初始化大小 initialCapacity = 50;
+  #	默认最大缓存对象个数 maximumSize = 50;
+  cache15m:
+    expireAfterAccess: 10
+    expireAfterWrite: 300
+    initialCapacity: 100
+    maximumSize: 100
+  cache30m:
+    expireAfterAccess: 5
+    expireAfterWrite: 300
+    initialCapacity: 100
+    maximumSize: 100
+  cache60m:
+    expireAfterAccess: 5
+    initialCapacity: 100
+    expireAfterWrite: 300
+    maximumSize: 100
+  cache180m:
+    expireAfterAccess: 5
+    initialCapacity: 100
+    expireAfterWrite: 300
+    maximumSize: 100
+  cache12h:
+    expireAfterAccess: 5
+    expireAfterWrite: 300
+    initialCapacity: 100
+    maximumSize: 100

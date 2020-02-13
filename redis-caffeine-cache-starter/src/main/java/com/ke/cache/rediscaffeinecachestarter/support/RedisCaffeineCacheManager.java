@@ -54,39 +54,15 @@ public class RedisCaffeineCacheManager implements CacheManager {
 			return cache;
 		}
 		if(!dynamic && !cacheNames.contains(name)) {
-			return cache;
+			return null;
 		}
 		
-		cache = new RedisCaffeineCache(name, stringKeyRedisTemplate, caffeineCache(), cacheRedisCaffeineProperties);
+		cache = new RedisCaffeineCache(name, stringKeyRedisTemplate, caffeineCache(name), cacheRedisCaffeineProperties);
 		Cache oldCache = cacheMap.putIfAbsent(name, cache);
 		logger.debug("create cache instance, the cache name is : {}", name);
 		return oldCache == null ? cache : oldCache;
 	}
 	
-	public com.github.benmanes.caffeine.cache.Cache<Object, Object> caffeineCache(){
-		Caffeine<Object, Object> cacheBuilder = Caffeine.newBuilder();
-		log.debug("本地缓存初始化：");
-		if(cacheRedisCaffeineProperties.getCaffeine().getExpireAfterAccess() > 0) {
-			log.debug("设置本地缓存访问后过期时间，{}秒", cacheRedisCaffeineProperties.getCaffeine().getExpireAfterAccess());
-			cacheBuilder.expireAfterAccess(cacheRedisCaffeineProperties.getCaffeine().getExpireAfterAccess(), TimeUnit.SECONDS);
-		}
-		if(cacheRedisCaffeineProperties.getCaffeine().getExpireAfterWrite() > 0) {
-			cacheBuilder.expireAfterWrite(cacheRedisCaffeineProperties.getCaffeine().getExpireAfterWrite(), TimeUnit.SECONDS);
-		}
-		if(cacheRedisCaffeineProperties.getCaffeine().getInitialCapacity() > 0) {
-			log.debug("设置缓存初始化大小{}", cacheRedisCaffeineProperties.getCaffeine().getInitialCapacity());
-			cacheBuilder.initialCapacity(cacheRedisCaffeineProperties.getCaffeine().getInitialCapacity());
-		}
-		if(cacheRedisCaffeineProperties.getCaffeine().getMaximumSize() > 0) {
-			log.debug("设置本地缓存最大值{}", cacheRedisCaffeineProperties.getCaffeine().getMaximumSize());
-			cacheBuilder.maximumSize(cacheRedisCaffeineProperties.getCaffeine().getMaximumSize());
-		}
-		if(cacheRedisCaffeineProperties.getCaffeine().getRefreshAfterWrite() > 0) {
-			cacheBuilder.refreshAfterWrite(cacheRedisCaffeineProperties.getCaffeine().getRefreshAfterWrite(), TimeUnit.SECONDS);
-		}
-		return cacheBuilder.build();
-	}
-
 	@Override
 	public Collection<String> getCacheNames() {
 		return this.cacheNames;
@@ -100,5 +76,61 @@ public class RedisCaffeineCacheManager implements CacheManager {
 		
 		RedisCaffeineCache redisCaffeineCache = (RedisCaffeineCache) cache;
 		redisCaffeineCache.clearLocal(key);
+	}
+
+	/**
+     * 实例化本地一级缓存
+	 * @param name
+     * @return
+     */
+	private com.github.benmanes.caffeine.cache.Cache<Object, Object> caffeineCache(String name) {
+		Caffeine<Object, Object> cacheBuilder = Caffeine.newBuilder();
+		CacheRedisCaffeineProperties.CacheDefault cacheConfig;
+		switch (name) {
+			case CacheNames.CACHE_15MINS:
+				cacheConfig = cacheRedisCaffeineProperties.getCache15m();
+				break;
+			case CacheNames.CACHE_30MINS:
+				cacheConfig = cacheRedisCaffeineProperties.getCache30m();
+				break;
+			case CacheNames.CACHE_60MINS:
+				cacheConfig = cacheRedisCaffeineProperties.getCache60m();
+				break;
+			case CacheNames.CACHE_180MINS:
+				cacheConfig = cacheRedisCaffeineProperties.getCache180m();
+				break;
+			case CacheNames.CACHE_12HOUR:
+				cacheConfig = cacheRedisCaffeineProperties.getCache12h();
+				break;
+			default:
+				cacheConfig = cacheRedisCaffeineProperties.getCacheDefault();
+		}
+		long expireAfterAccess = cacheConfig.getExpireAfterAccess();
+		long expireAfterWrite = cacheConfig.getExpireAfterWrite();
+		int initialCapacity = cacheConfig.getInitialCapacity();
+		long maximumSize = cacheConfig.getMaximumSize();
+		long refreshAfterWrite = cacheConfig.getRefreshAfterWrite();
+
+		log.debug("本地缓存初始化：");
+		if (expireAfterAccess > 0) {
+			log.debug("设置本地缓存访问后过期时间，{}秒", expireAfterAccess);
+			cacheBuilder.expireAfterAccess(expireAfterAccess, TimeUnit.SECONDS);
+		}
+		if (expireAfterWrite > 0) {
+			log.debug("设置本地缓存写入后过期时间，{}秒", expireAfterWrite);
+			cacheBuilder.expireAfterWrite(expireAfterWrite, TimeUnit.SECONDS);
+		}
+		if (initialCapacity > 0) {
+			log.debug("设置缓存初始化大小{}", initialCapacity);
+			cacheBuilder.initialCapacity(initialCapacity);
+		}
+		if (maximumSize > 0) {
+			log.debug("设置本地缓存最大值{}", maximumSize);
+			cacheBuilder.maximumSize(maximumSize);
+		}
+		if (refreshAfterWrite > 0) {
+			cacheBuilder.refreshAfterWrite(refreshAfterWrite, TimeUnit.SECONDS);
+		}
+		return cacheBuilder.build();
 	}
 }

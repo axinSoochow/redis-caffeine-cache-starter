@@ -34,9 +34,6 @@ public class RedisCaffeineCache extends AbstractValueAdaptingCache {
     private long defaultExpiration = 3600;
 
     private Map<String, Long> defaultExpires = new HashMap<>();
-    private String topic = "cache:redis:caffeine:topic";
-    private Map<String, ReentrantLock> keyLockMap = new ConcurrentHashMap();
-
     {
         defaultExpires.put(CacheNames.CACHE_15MINS, TimeUnit.MINUTES.toSeconds(15));
         defaultExpires.put(CacheNames.CACHE_30MINS, TimeUnit.MINUTES.toSeconds(30));
@@ -44,6 +41,9 @@ public class RedisCaffeineCache extends AbstractValueAdaptingCache {
         defaultExpires.put(CacheNames.CACHE_180MINS, TimeUnit.MINUTES.toSeconds(180));
         defaultExpires.put(CacheNames.CACHE_12HOUR, TimeUnit.HOURS.toSeconds(12));
     }
+
+    private String topic = "cache:redis:caffeine:topic";
+    private Map<String, ReentrantLock> keyLockMap = new ConcurrentHashMap();
 
     protected RedisCaffeineCache(boolean allowNullValues) {
         super(allowNullValues);
@@ -79,10 +79,10 @@ public class RedisCaffeineCache extends AbstractValueAdaptingCache {
         }
         //key在redis和缓存中均不存在
         ReentrantLock lock = keyLockMap.get(key.toString());
+
         if (lock == null) {
             logger.debug("create lock for key : {}", key);
-            lock = new ReentrantLock();
-            keyLockMap.putIfAbsent(key.toString(), lock);
+            lock = keyLockMap.putIfAbsent(key.toString(), new ReentrantLock());
         }
         try {
             lock.lock();
@@ -113,15 +113,15 @@ public class RedisCaffeineCache extends AbstractValueAdaptingCache {
         redisTemplate.opsForValue().set(getKey(key), toStoreValue(value), expire, TimeUnit.SECONDS);
 
         //缓存变更时通知其他节点清理本地缓存
-        push(new CacheMessage(this.name, key));
-
-        caffeineCache.put(key, value);
+        push(new CacheMessage(this.name, key, CacheMessageListener.getLocalAddress()));
+        //此处put没有意义，会收到自己发送的缓存key失效消息
+//        caffeineCache.put(key, value);
     }
 
     @Override
     public ValueWrapper putIfAbsent(Object key, Object value) {
         Object cacheKey = getKey(key);
-        // TODO:使用setIfAbsent原子性操作
+        // 使用setIfAbsent原子性操作
         long expire = getExpire();
         boolean setSuccess;
         setSuccess = redisTemplate.opsForValue().setIfAbsent(getKey(key), toStoreValue(value), expire, TimeUnit.SECONDS);
@@ -129,7 +129,7 @@ public class RedisCaffeineCache extends AbstractValueAdaptingCache {
         Object hasValue;
         //setNx结果
         if (setSuccess) {
-            push(new CacheMessage(this.name, key));
+            push(new CacheMessage(this.name, key, CacheMessageListener.getLocalAddress()));
             hasValue = value;
         }else {
             hasValue = redisTemplate.opsForValue().get(cacheKey);
@@ -144,7 +144,7 @@ public class RedisCaffeineCache extends AbstractValueAdaptingCache {
         // 先清除redis中缓存数据，然后清除caffeine中的缓存，避免短时间内如果先清除caffeine缓存后其他请求会再从redis里加载到caffeine中
         redisTemplate.delete(getKey(key));
 
-        push(new CacheMessage(this.name, key));
+        push(new CacheMessage(this.name, key, CacheMessageListener.getLocalAddress()));
 
         caffeineCache.invalidate(key);
     }
@@ -157,7 +157,7 @@ public class RedisCaffeineCache extends AbstractValueAdaptingCache {
             redisTemplate.delete(key);
         }
 
-        push(new CacheMessage(this.name, null));
+        push(new CacheMessage(this.name, null, CacheMessageListener.getLocalAddress()));
 
         caffeineCache.invalidateAll();
     }
@@ -185,8 +185,23 @@ public class RedisCaffeineCache extends AbstractValueAdaptingCache {
         return value;
     }
 
+    /**
+     * @description 清理本地缓存
+     */
+    public void clearLocal(Object key) {
+        logger.debug("clear local cache, the key is : {}", key);
+        if (key == null) {
+            caffeineCache.invalidateAll();
+        } else {
+            caffeineCache.invalidate(key);
+        }
+    }
+
+    //————————————————————————————私有方法——————————————————————————
+
     private Object getKey(Object key) {
-        return this.name.concat(":").concat(StringUtils.isEmpty(cachePrefix) ? key.toString() : cachePrefix.concat(":").concat(key.toString()));
+        String keyStr = this.name.concat(":").concat(key.toString());
+        return StringUtils.isEmpty(this.cachePrefix) ? keyStr : this.cachePrefix.concat(":").concat(keyStr);
     }
 
     private long getExpire() {
@@ -202,15 +217,5 @@ public class RedisCaffeineCache extends AbstractValueAdaptingCache {
         redisTemplate.convertAndSend(topic, message);
     }
 
-    /**
-     * @description 清理本地缓存
-     */
-    public void clearLocal(Object key) {
-        logger.debug("clear local cache, the key is : {}", key);
-        if (key == null) {
-            caffeineCache.invalidateAll();
-        } else {
-            caffeineCache.invalidate(key);
-        }
-    }
+
 }

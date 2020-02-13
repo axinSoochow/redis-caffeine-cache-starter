@@ -1,7 +1,10 @@
 package com.ke.cache.rediscaffeinecachestarter.support;
 
+import lombok.Data;
+
 import java.io.Serializable;
 
+@Data
 public class CacheMessage implements Serializable {
 
 	/** */
@@ -11,26 +14,13 @@ public class CacheMessage implements Serializable {
 	
 	private Object key;
 
-	public CacheMessage(String cacheName, Object key) {
+	private String ip;
+
+	public CacheMessage(String cacheName, Object key, String ip) {
 		super();
 		this.cacheName = cacheName;
 		this.key = key;
+		this.ip = ip;
 	}
 
-	public String getCacheName() {
-		return cacheName;
-	}
-
-	public void setCacheName(String cacheName) {
-		this.cacheName = cacheName;
-	}
-
-	public Object getKey() {
-		return key;
-	}
-
-	public void setKey(Object key) {
-		this.key = key;
-	}
-	
 }
