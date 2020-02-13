@@ -113,7 +113,7 @@ public class RedisCaffeineCache extends AbstractValueAdaptingCache {
         redisTemplate.opsForValue().set(getKey(key), toStoreValue(value), expire, TimeUnit.SECONDS);
 
         //缓存变更时通知其他节点清理本地缓存
-        push(new CacheMessage(this.name, key, CacheMessageListener.getLocalAddress()));
+        push(new CacheMessage(this.name, key));
         //此处put没有意义，会收到自己发送的缓存key失效消息
 //        caffeineCache.put(key, value);
     }
@@ -130,7 +130,7 @@ public class RedisCaffeineCache extends AbstractValueAdaptingCache {
         //setNx结果
         if (setSuccess) {
             redisTemplate.expire(getKey(key), expire, TimeUnit.SECONDS);
-            push(new CacheMessage(this.name, key, CacheMessageListener.getLocalAddress()));
+            push(new CacheMessage(this.name, key));
             hasValue = value;
         }else {
             hasValue = redisTemplate.opsForValue().get(cacheKey);
@@ -145,7 +145,7 @@ public class RedisCaffeineCache extends AbstractValueAdaptingCache {
         // 先清除redis中缓存数据，然后清除caffeine中的缓存，避免短时间内如果先清除caffeine缓存后其他请求会再从redis里加载到caffeine中
         redisTemplate.delete(getKey(key));
 
-        push(new CacheMessage(this.name, key, CacheMessageListener.getLocalAddress()));
+        push(new CacheMessage(this.name, key));
 
         caffeineCache.invalidate(key);
     }
@@ -158,8 +158,7 @@ public class RedisCaffeineCache extends AbstractValueAdaptingCache {
             redisTemplate.delete(key);
         }
 
-        push(new CacheMessage(this.name, null, CacheMessageListener.getLocalAddress()));
-
+        push(new CacheMessage(this.name, null));
         caffeineCache.invalidateAll();
     }
 

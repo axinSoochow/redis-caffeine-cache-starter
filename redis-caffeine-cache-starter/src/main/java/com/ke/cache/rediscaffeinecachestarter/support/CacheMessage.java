@@ -14,13 +14,10 @@ public class CacheMessage implements Serializable {
 	
 	private Object key;
 
-	private String ip;
-
-	public CacheMessage(String cacheName, Object key, String ip) {
+	public CacheMessage(String cacheName, Object key) {
 		super();
 		this.cacheName = cacheName;
 		this.key = key;
-		this.ip = ip;
 	}
 
 }
