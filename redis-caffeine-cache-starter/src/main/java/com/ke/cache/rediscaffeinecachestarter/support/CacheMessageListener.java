@@ -1,17 +1,11 @@
 package com.ke.cache.rediscaffeinecachestarter.support;
 
 import com.alibaba.fastjson.parser.ParserConfig;
-import com.sun.xml.internal.ws.util.UtilException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.data.redis.core.RedisTemplate;
-
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.util.Enumeration;
 
 /**
  * @author axin
