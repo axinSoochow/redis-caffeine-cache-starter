@@ -12,9 +12,6 @@ import java.util.Set;
 @Data
 public class CacheRedisCaffeineProperties {
 
-	/** 自定义cacheNames **/
-	private Set<String> cacheNames = new HashSet<>();
-	
 	/** 是否存储空值，默认true，防止缓存穿透*/
 	private boolean cacheNullValues = true;
 	

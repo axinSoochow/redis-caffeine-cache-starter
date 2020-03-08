@@ -1,6 +1,7 @@
 package com.ke.cache.rediscaffeinecachestarter.support;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.stats.CacheStats;
 import com.ke.cache.rediscaffeinecachestarter.CacheRedisCaffeineProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -8,10 +9,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.util.CollectionUtils;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
@@ -21,7 +21,7 @@ public class RedisCaffeineCacheManager implements CacheManager {
 	
 	private final Logger logger = LoggerFactory.getLogger(RedisCaffeineCacheManager.class);
 	
-	private ConcurrentMap<String, Cache> cacheMap = new ConcurrentHashMap<String, Cache>();
+	private static ConcurrentMap<String, Cache> cacheMap = new ConcurrentHashMap<String, Cache>();
 	
 	private CacheRedisCaffeineProperties cacheRedisCaffeineProperties;
 	
@@ -44,9 +44,35 @@ public class RedisCaffeineCacheManager implements CacheManager {
 		this.cacheRedisCaffeineProperties = cacheRedisCaffeineProperties;
 		this.stringKeyRedisTemplate = stringKeyRedisTemplate;
 		this.dynamic = cacheRedisCaffeineProperties.isDynamic();
-		this.cacheNames.addAll(cacheRedisCaffeineProperties.getCacheNames());
 	}
 
+	//——————————————————————— 进行缓存工具 ——————————————————————
+	/**
+	 * 清除所有进程缓存
+	 */
+	public static void clearAllCache() {
+		cacheMap = new ConcurrentHashMap<>();
+	}
+
+	/**
+	 * 返回所有进程缓存(二级缓存)的统计信息
+	 * result:{"缓存名称":统计信息}
+	 * @return
+	 */
+	public static Map<String, CacheStats> getCacheStats() {
+		if (CollectionUtils.isEmpty(cacheMap)) {
+			return null;
+		}
+
+		Map<String, CacheStats> result = new LinkedHashMap<>();
+		for (Cache cache : cacheMap.values()) {
+			RedisCaffeineCache caffeineCache = (RedisCaffeineCache) cache;
+			result.put(caffeineCache.getName(), caffeineCache.getCaffeineCache().stats());
+		}
+		return result;
+	}
+
+	//—————————————————————————— core —————————————————————————
 	@Override
 	public Cache getCache(String name) {
 		Cache cache = cacheMap.get(name);
@@ -131,6 +157,7 @@ public class RedisCaffeineCacheManager implements CacheManager {
 		if (refreshAfterWrite > 0) {
 			cacheBuilder.refreshAfterWrite(refreshAfterWrite, TimeUnit.SECONDS);
 		}
+		cacheBuilder.recordStats();
 		return cacheBuilder.build();
 	}
 }

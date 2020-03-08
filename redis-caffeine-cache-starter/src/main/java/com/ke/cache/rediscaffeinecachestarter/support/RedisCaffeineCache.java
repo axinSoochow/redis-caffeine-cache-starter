@@ -2,6 +2,7 @@ package com.ke.cache.rediscaffeinecachestarter.support;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.ke.cache.rediscaffeinecachestarter.CacheRedisCaffeineProperties;
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.support.AbstractValueAdaptingCache;
@@ -24,6 +25,7 @@ public class RedisCaffeineCache extends AbstractValueAdaptingCache {
 
     private RedisTemplate<Object, Object> redisTemplate;
 
+    @Getter
     private Cache<Object, Object> caffeineCache;
 
     private String cachePrefix;
@@ -216,6 +218,5 @@ public class RedisCaffeineCache extends AbstractValueAdaptingCache {
     private void push(CacheMessage message) {
         redisTemplate.convertAndSend(topic, message);
     }
-
 
 }
