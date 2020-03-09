@@ -44,7 +44,7 @@ public class RedisCaffeineCache extends AbstractValueAdaptingCache {
         defaultExpires.put(CacheNames.CACHE_12HOUR, TimeUnit.HOURS.toSeconds(12));
     }
 
-    private String topic = "cache:redis:caffeine:topic";
+    private String topic;
     private Map<String, ReentrantLock> keyLockMap = new ConcurrentHashMap();
 
     protected RedisCaffeineCache(boolean allowNullValues) {

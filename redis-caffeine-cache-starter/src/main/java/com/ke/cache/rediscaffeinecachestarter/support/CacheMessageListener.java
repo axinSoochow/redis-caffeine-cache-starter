@@ -22,7 +22,7 @@ public class CacheMessageListener implements MessageListener {
 
 	{
 		//打开json autotype功能
-		ParserConfig.getGlobalInstance().addAccept("com.axin.learn.rediscaffeine.support.");
+		ParserConfig.getGlobalInstance().addAccept("com.ke.cache.rediscaffeinecachestarter.support.");
 	}
 
 	public CacheMessageListener(RedisTemplate<Object, Object> redisTemplate,
@@ -37,7 +37,4 @@ public class CacheMessageListener implements MessageListener {
 		logger.debug("收到redis清除缓存消息, 开始清除本地缓存, the cacheName is {}, the key is {}", cacheMessage.getCacheName(), cacheMessage.getKey());
 		redisCaffeineCacheManager.clearLocal(cacheMessage.getCacheName(), cacheMessage.getKey());
 	}
-
-	//——————————————————————————————————————————————————————————————————————————
-
 }

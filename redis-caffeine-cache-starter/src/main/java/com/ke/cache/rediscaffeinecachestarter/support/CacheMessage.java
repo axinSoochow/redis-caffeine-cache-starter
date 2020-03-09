@@ -1,10 +1,12 @@
 package com.ke.cache.rediscaffeinecachestarter.support;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
 @Data
+@NoArgsConstructor
 public class CacheMessage implements Serializable {
 
 	/** */

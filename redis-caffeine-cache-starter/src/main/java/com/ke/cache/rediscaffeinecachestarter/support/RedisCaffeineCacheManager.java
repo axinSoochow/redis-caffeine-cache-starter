@@ -50,8 +50,8 @@ public class RedisCaffeineCacheManager implements CacheManager {
 	/**
 	 * 清除所有进程缓存
 	 */
-	public static void clearAllCache() {
-		cacheMap = new ConcurrentHashMap<>();
+	public void clearAllCache() {
+		stringKeyRedisTemplate.convertAndSend(cacheRedisCaffeineProperties.getRedis().getTopic(), new CacheMessage(null, null));
 	}
 
 	/**
@@ -95,9 +95,16 @@ public class RedisCaffeineCacheManager implements CacheManager {
 	}
 	
 	public void clearLocal(String cacheName, Object key) {
+		//cacheName为null 清除所有进程缓存
+		if (cacheName == null) {
+			log.info("清除所有本地缓存");
+			cacheMap = new ConcurrentHashMap<>();
+			return;
+		}
+
 		Cache cache = cacheMap.get(cacheName);
 		if(cache == null) {
-			return ;
+			return;
 		}
 		
 		RedisCaffeineCache redisCaffeineCache = (RedisCaffeineCache) cache;
