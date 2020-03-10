@@ -47,15 +47,15 @@ public class CacheRedisCaffeineProperties {
 	@Data
 	public class CacheDefault {
 		/** 访问后过期时间，单位秒*/
-		private long expireAfterAccess;
+		protected long expireAfterAccess;
 		/** 写入后过期时间，单位秒*/
-		private long expireAfterWrite = 120;
+		protected long expireAfterWrite = 120;
 		/** 写入后刷新时间，单位秒*/
-		private long refreshAfterWrite;
+		protected long refreshAfterWrite;
 		/** 初始化大小,默认50*/
-		private int initialCapacity = 50;
+		protected int initialCapacity = 50;
 		/** 最大缓存对象个数*/
-		private long maximumSize = 50;
+		protected long maximumSize = 50;
 		
 		/** 由于权重需要缓存对象来提供，对于使用spring cache这种场景不是很适合，所以暂不支持配置*/
 //		private long maximumWeight;
