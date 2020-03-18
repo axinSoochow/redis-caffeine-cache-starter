@@ -84,7 +84,8 @@ public class RedisCaffeineCache extends AbstractValueAdaptingCache {
 
         if (lock == null) {
             logger.debug("create lock for key : {}", key);
-            lock = keyLockMap.putIfAbsent(key.toString(), new ReentrantLock());
+            keyLockMap.putIfAbsent(key.toString(), new ReentrantLock());
+            lock = keyLockMap.get(key.toString());
         }
         try {
             lock.lock();
