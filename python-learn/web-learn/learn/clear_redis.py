@@ -18,18 +18,18 @@ import redis
 # keys_file = 'keys-fmp.txt'
 
 # bfa-生产环境
-# host = "m11507.mars.redis.ljnode.com"
-# port = "11507"
-# pwd = None
-# db = None
-# keys_file = 'keys-bfa.txt'
+host = "m11507.mars.redis.ljnode.com"
+port = "11507"
+pwd = None
+db = None
+keys_file = 'keys-bfa.txt'
 
 # fmp-生产环境
-host = "m11982.zeus.redis.ljnode.com"
-port = "11982"
-pwd = "Hu9hAbGcqiVC6vYd"
-db = None
-keys_file = 'keys-fmp.txt'
+# host = "m11982.zeus.redis.ljnode.com"
+# port = "11982"
+# pwd = "Hu9hAbGcqiVC6vYd"
+# db = None
+# keys_file = 'keys-fmp.txt'
 
 if __name__ == '__main__':
     if pwd is not None:
