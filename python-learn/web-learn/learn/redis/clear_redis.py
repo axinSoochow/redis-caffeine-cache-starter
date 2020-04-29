@@ -1,14 +1,12 @@
 # coding=utf-8
-import sys
-sys.path.append("/usr/local/lib/python3.7/site-packages")
 import redis
 
 # beta环境
-# host = "m-redis-k8s.shbeta.ke.com"
-# port = "36379"
-# db = 2
-# pwd = None
-# keys_file = 'keys.txt'
+host = "m-redis-k8s.shbeta.ke.com"
+port = "36379"
+db = 2
+pwd = None
+keys_file = 'keys-demo.txt'
 
 # fmp-off
 # host = "m-redis-k8s.shoff.ke.com"
@@ -18,11 +16,11 @@ import redis
 # keys_file = 'keys-fmp.txt'
 
 # bfa-生产环境
-host = "m11507.mars.redis.ljnode.com"
-port = "11507"
-pwd = None
-db = None
-keys_file = 'keys-bfa.txt'
+# host = "m11507.mars.redis.ljnode.com"
+# port = "11507"
+# pwd = None
+# db = None
+# keys_file = 'keys-bfa.txt'
 
 # fmp-生产环境
 # host = "m11982.zeus.redis.ljnode.com"
