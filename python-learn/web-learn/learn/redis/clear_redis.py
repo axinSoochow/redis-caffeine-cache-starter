@@ -2,11 +2,11 @@
 import redis
 
 # beta环境
-host = "m-redis-k8s.shbeta.ke.com"
-port = "36379"
-db = 2
-pwd = None
-keys_file = 'keys-demo.txt'
+# host = "m-redis-k8s.shbeta.ke.com"
+# port = "36379"
+# db = 2
+# pwd = None
+# keys_file = "redis/keys-demo.txt"
 
 # fmp-off
 # host = "m-redis-k8s.shoff.ke.com"
@@ -23,11 +23,11 @@ keys_file = 'keys-demo.txt'
 # keys_file = 'keys-bfa.txt'
 
 # fmp-生产环境
-# host = "m11982.zeus.redis.ljnode.com"
-# port = "11982"
-# pwd = "Hu9hAbGcqiVC6vYd"
-# db = None
-# keys_file = 'keys-fmp.txt'
+host = "m11982.zeus.redis.ljnode.com"
+port = "11982"
+pwd = "Hu9hAbGcqiVC6vYd"
+db = None
+keys_file = 'redis/keys-fmp.txt'
 
 if __name__ == '__main__':
     if pwd is not None:
