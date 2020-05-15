@@ -2,6 +2,7 @@ import json
 import time;
 
 import requests
+# 中台接入层模块
 class FmpValidateProcesser(object):
     fields = "fields"
     code = "fieldCode"
@@ -36,14 +37,16 @@ class FmpValidateProcesser(object):
         del data[unit[self.code]]
         api_result = self.post_fmp_creat(data).json()
         if (api_result["code"] != self.biz_error):
+
             result.append("{}是必填字段，在没有传该字段时，系统出现预期外的结果:{}".format(unit[self.code],api_result))
         data[unit[self.code]] = temp
 
     # ——————————————————————— 工具方法 ——————————————————————————
     def change_key(self, change_key, param):
+        new_key= "axin_{}".format(int(round(time.time() * 1000)))
         for key in change_key:
             del param[key]
-            param[key] = "axin_{}".format(int(round(time.time() * 1000)))
+            param[key] = new_key
 
 if __name__ == '__main__':
     print("axin_{}".format(int(round(time.time() * 1000))))
