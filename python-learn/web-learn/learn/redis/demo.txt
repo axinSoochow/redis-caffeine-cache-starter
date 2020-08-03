@@ -1,5 +1,0 @@
-*fmp-book-l2:cache:*
-
-*:fmp-book-server:BookDefService:get:*
-
-fmp-book-l2:cache:12h:fmp-book-server:FmpBookListDAOMongo:queryBookDefine:*
