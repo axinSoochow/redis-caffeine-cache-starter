@@ -3,14 +3,15 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.lianjia.ctt</groupId>
+        <groupId>com.ke.ctt</groupId>
         <artifactId>spring-boot-optimus-prime</artifactId>
-        <version>1.5.6.6</version>
+        <version>2.1.9.9</version>
+        <relativePath/>
     </parent>
 
     <groupId>com.ke.cache</groupId>
     <artifactId>redis-caffeine-cache-starter</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>2.0.0-SNAPSHOT</version>
     <name>redis-caffeine-cache-starter</name>
     <description>分布式二级缓存装载组件</description>
 

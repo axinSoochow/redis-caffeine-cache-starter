@@ -9,6 +9,7 @@ import org.springframework.cache.support.AbstractValueAdaptingCache;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.util.StringUtils;
 
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -127,12 +128,11 @@ public class RedisCaffeineCache extends AbstractValueAdaptingCache {
         // 使用setIfAbsent原子性操作
         long expire = getExpire();
         boolean setSuccess;
-        setSuccess = redisTemplate.opsForValue().setIfAbsent(getKey(key), toStoreValue(value));
+        setSuccess = redisTemplate.opsForValue().setIfAbsent(getKey(key), toStoreValue(value), Duration.ofSeconds(expire));
 
         Object hasValue;
         //setNx结果
         if (setSuccess) {
-            redisTemplate.expire(getKey(key), expire, TimeUnit.SECONDS);
             push(new CacheMessage(this.name, key));
             hasValue = value;
         }else {
