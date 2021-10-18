@@ -31,6 +31,12 @@ public class CacheMessageListener implements MessageListener {
 		this.redisCaffeineCacheManager = redisCaffeineCacheManager;
 	}
 
+	/**
+	 * 利用 redis 发布订阅通知其他节点清除本地缓存
+	 *
+	 * @param message
+	 * @param pattern
+	 */
 	@Override
 	public void onMessage(Message message, byte[] pattern) {
 		CacheMessage cacheMessage = (CacheMessage) redisTemplate.getValueSerializer().deserialize(message.getBody());

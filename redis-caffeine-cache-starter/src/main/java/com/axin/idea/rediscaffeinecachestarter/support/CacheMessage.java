@@ -9,7 +9,6 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class CacheMessage implements Serializable {
 
-	/** */
 	private static final long serialVersionUID = -1L;
 
 	private String cacheName;
