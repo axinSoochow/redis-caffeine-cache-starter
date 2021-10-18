@@ -32,3 +32,36 @@ Redis用来存储热点数据，Redis中没有的数据则直接去数据库访�
 数据删除流程：
 
 ![image](https://axin-soochow.oss-cn-hangzhou.aliyuncs.com/19-11-22/WX20191208-164436%402x.png)
+
+
+## 如何使用组件？
+
+组件是基于Spring Cache框架上改造的，在项目中使用分布式缓存，仅仅需要在缓存注解上增加：cacheManager ="L2_CacheManager"，或者 cacheManager = CacheRedisCaffeineAutoConfiguration.分布式二级缓存
+
+
+```Java
+//这个方法会使用分布式二级缓存来提供查询
+@Cacheable(cacheNames = CacheNames.CACHE_12HOUR, cacheManager = "L2_CacheManager")
+public Map<String, ValidateConfig> getAllValidateConfig() {
+    List<ValidateConfig> configs = mongoTemplate.findAll(ValidateConfig.class, ValidateConfigCollectionName);
+    return configs.stream().collect(Collectors.toMap(ValidateConfig::getConfigId, Function.identity(), (k1, k2) -> k1));
+}
+```
+
+如果你想既使用分布式缓存，又想用分布式二级缓存组件，那你需要向Spring注入一个 @Primary 的 CacheManager bean 然后:
+
+```Java
+//这个方法会使用分布式二级缓存
+@Cacheable(cacheNames = CacheNames.CACHE_12HOUR, cacheManager = "L2_CacheManager")
+public Map<String, ValidateConfig> getAllValidateConfig() {
+    List<ValidateConfig> configs = mongoTemplate.findAll(ValidateConfig.class, ValidateConfigCollectionName);
+    return configs.stream().collect(Collectors.toMap(ValidateConfig::getConfigId, Function.identity(), (k1, k2) -> k1));
+}
+//这个方法会使用分布式缓存
+@Cacheable(cacheNames = CacheNames.CACHE_12HOUR)
+public Map<String, ValidateConfig> getAllValidateConfig2() {
+    List<ValidateConfig> configs = mongoTemplate.findAll(ValidateConfig.class, ValidateConfigCollectionName);
+    return configs.stream().collect(Collectors.toMap(ValidateConfig::getConfigId, Function.identity(), (k1, k2) -> k1));
+}
+```
+
