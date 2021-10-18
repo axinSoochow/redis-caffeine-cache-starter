@@ -45,8 +45,7 @@ Redis用来存储热点数据，Redis中没有的数据则直接去数据库访�
 ```Java
 //这个方法会使用分布式二级缓存来提供查询
 @Cacheable(cacheNames = CacheNames.CACHE_12HOUR, cacheManager = "L2_CacheManager")
-public Config getAllValidateConfig() {
-    
+public Config getAllValidateConfig() { 
 }
 ```
 
