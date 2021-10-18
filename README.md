@@ -45,9 +45,8 @@ Redis用来存储热点数据，Redis中没有的数据则直接去数据库访�
 ```Java
 //这个方法会使用分布式二级缓存来提供查询
 @Cacheable(cacheNames = CacheNames.CACHE_12HOUR, cacheManager = "L2_CacheManager")
-public Map<String, ValidateConfig> getAllValidateConfig() {
-    List<ValidateConfig> configs = mongoTemplate.findAll(ValidateConfig.class, ValidateConfigCollectionName);
-    return configs.stream().collect(Collectors.toMap(ValidateConfig::getConfigId, Function.identity(), (k1, k2) -> k1));
+public Config getAllValidateConfig() {
+    
 }
 ```
 
@@ -56,15 +55,12 @@ public Map<String, ValidateConfig> getAllValidateConfig() {
 ```Java
 //这个方法会使用分布式二级缓存
 @Cacheable(cacheNames = CacheNames.CACHE_12HOUR, cacheManager = "L2_CacheManager")
-public Map<String, ValidateConfig> getAllValidateConfig() {
-    List<ValidateConfig> configs = mongoTemplate.findAll(ValidateConfig.class, ValidateConfigCollectionName);
-    return configs.stream().collect(Collectors.toMap(ValidateConfig::getConfigId, Function.identity(), (k1, k2) -> k1));
+public Config getAllValidateConfig() {
 }
+
 //这个方法会使用分布式缓存
 @Cacheable(cacheNames = CacheNames.CACHE_12HOUR)
-public Map<String, ValidateConfig> getAllValidateConfig2() {
-    List<ValidateConfig> configs = mongoTemplate.findAll(ValidateConfig.class, ValidateConfigCollectionName);
-    return configs.stream().collect(Collectors.toMap(ValidateConfig::getConfigId, Function.identity(), (k1, k2) -> k1));
+public Config getAllValidateConfig2() {
 }
 ```
 
