@@ -1,7 +1,7 @@
-package com.ke.cache.rediscaffeinecachestarter;
+package com.axin.idea.rediscaffeinecachestarter;
 
-import com.ke.cache.rediscaffeinecachestarter.support.CacheMessageListener;
-import com.ke.cache.rediscaffeinecachestarter.support.RedisCaffeineCacheManager;
+import com.axin.idea.rediscaffeinecachestarter.support.CacheMessageListener;
+import com.axin.idea.rediscaffeinecachestarter.support.RedisCaffeineCacheManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;

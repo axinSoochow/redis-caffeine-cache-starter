@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.ke.cache.rediscaffeinecachestarter.CacheRedisCaffeineAutoConfiguration
+  com.axin.idea.rediscaffeinecachestarter.CacheRedisCaffeineAutoConfiguration

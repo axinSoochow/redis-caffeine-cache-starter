@@ -1,4 +1,4 @@
-package com.ke.cache.rediscaffeinecachestarter.support;
+package com.axin.idea.rediscaffeinecachestarter.support;
 
 public interface CacheNames {
     /** 15分钟缓存组 */

@@ -1,4 +1,4 @@
-package com.ke.cache.rediscaffeinecachestarter.support;
+package com.axin.idea.rediscaffeinecachestarter.support;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

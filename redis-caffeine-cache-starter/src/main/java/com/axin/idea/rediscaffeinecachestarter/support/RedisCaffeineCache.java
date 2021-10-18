@@ -1,7 +1,7 @@
-package com.ke.cache.rediscaffeinecachestarter.support;
+package com.axin.idea.rediscaffeinecachestarter.support;
 
+import com.axin.idea.rediscaffeinecachestarter.CacheRedisCaffeineProperties;
 import com.github.benmanes.caffeine.cache.Cache;
-import com.ke.cache.rediscaffeinecachestarter.CacheRedisCaffeineProperties;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,4 +1,4 @@
-package com.ke.cache.rediscaffeinecachestarter;
+package com.axin.idea.rediscaffeinecachestarter;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

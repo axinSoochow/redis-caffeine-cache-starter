@@ -1,4 +1,4 @@
-package com.ke.cache.rediscaffeinecachestarter.support;
+package com.axin.idea.rediscaffeinecachestarter.support;
 
 import com.alibaba.fastjson.parser.ParserConfig;
 import org.slf4j.Logger;
@@ -22,7 +22,7 @@ public class CacheMessageListener implements MessageListener {
 
 	{
 		//打开json autotype功能
-		ParserConfig.getGlobalInstance().addAccept("com.ke.cache.rediscaffeinecachestarter.support.");
+		ParserConfig.getGlobalInstance().addAccept("com.axin.idea.rediscaffeinecachestarter.support.");
 	}
 
 	public CacheMessageListener(RedisTemplate<Object, Object> redisTemplate,
